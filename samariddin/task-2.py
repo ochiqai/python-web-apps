@@ -1,25 +1,25 @@
 import gradio as gr
-def visible_component(input_text):
-    return gr.update(visible=True)
-def login_fn(username, password):
 
-    # Add your authentication logic here
-    gr.update(visible=True)
-    if username == "aa" and password == "aa":
 
-        return "Login successful!"
+def login_fn(user, password, component):
+    if user == "aa" and password == "aa":
+        component.visible=True
+        return "Login successful!", component.visible
     else:
-        return "Invalid credentials."
+        return "Invalid credentials.", component.visible
+      
 
 with gr.Blocks() as demo:
     col1 = gr.Column()
     col2 = gr.Column(visible=False)
     with col1:
-        login = gr.Textbox(label="Login")
+        user = gr.Textbox(label="User")
         password = gr.Textbox(label="Password")
-        greet_btn = gr.Button("Log In")
-        result = gr.Textbox(label="",visible=False)
-        greet_btn.click(lambda :gr.update(visible=False), None, col1).then(lambda :gr.update(visible=True), None, col2)
+        login_btn = gr.Button("Login")
+        
+        result = gr.Textbox(label="", visible=False)
+      
+        login_btn.click(login_fn, [user, password], col1).then(lambda :gr.update(visible=True), None, col2).then(lambda :gr.update(visible=False), None, col1)
 
     with col2:
         gr.Markdown("""
@@ -28,6 +28,7 @@ with gr.Blocks() as demo:
 
 if __name__ == "__main__":
     demo.launch()
+
 
 
 
